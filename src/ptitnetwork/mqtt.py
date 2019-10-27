@@ -16,7 +16,7 @@ def on_connect_1(client, userdata, flags, rc):
 class Mqtt(client.Client):
 
     def __init__(self, **kwargs):
-        super.__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @classmethod
     def create(cls, on_connect, post_fix=None, **kwargs):
