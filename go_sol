@@ -1,0 +1,5 @@
+export SOL_USERNAME=solace-cloud-client
+export SOL_PASSWORD=kspvi62122ipifg7s19lc40v4j
+export SOL_URI=mr3i7dci3219.messaging.solace.cloud
+export SOL_MQTT_PORT=21126
+

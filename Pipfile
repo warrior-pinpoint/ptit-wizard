@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 paho-mqtt = ">=1.4.0"
+pytest = "*"
 
 [dev-packages]
 

@@ -3,7 +3,6 @@ import time
 import os
 import uuid
 from collections import namedtuple
-
 from common import constant
 
 _MQTT_CREDENTIAL = namedtuple('MQTT_CREDENTIAL', ['host', 'port', 'username', 'password'])
@@ -28,7 +27,7 @@ class Mqtt(client.Client):
             kwargs['client_id'] = '{}.{}-pip'.format(os.getpid(), post_fix)
 
         time_alive = kwargs.get('time_alive', 60)
-        client = cls.__init__(kwargs.pop('client_id'))
+        client = cls(client_id=kwargs.pop('client_id'))
         client.on_connect = on_connect
 
         cred = cls._infer_credential()
@@ -46,13 +45,16 @@ class Mqtt(client.Client):
             constant.ENV_CREDENTIAL_PW: "password",
         }
 
-        credential = {key: os.getenv(env_key) for env_key, key in env_mapping}
+        credential = {key: os.getenv(env_key) for env_key, key in env_mapping.items()}
+        credential['port'] = int(credential['port'])
         credential = _MQTT_CREDENTIAL(**credential)
         return credential
 
 
 if __name__ == '__main__':
-    client = Mqtt.create('tai1')
+
+    client = Mqtt.create(client_id='tai1', on_connect=on_connect_1)
+    client.loop_start()
     print(client)
 
     while True:
