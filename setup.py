@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 requirements = [
     "paho-mqtt==1.3.1",
-    "requests==2.22.0"
+    "requests==2.20.0"
 ]
 
 setup(
