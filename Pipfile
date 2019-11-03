@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 paho-mqtt = ">=1.4.0"
 pytest = "*"
+flask = "==1.1.1"
 
 [dev-packages]
 

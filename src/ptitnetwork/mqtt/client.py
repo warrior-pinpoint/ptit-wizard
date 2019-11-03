@@ -3,7 +3,7 @@ import time
 import os
 import uuid
 from collections import namedtuple
-from .common import constants
+from src.ptitnetwork.common import constants
 
 MQTT_LOG_ERR = 0x08
 
