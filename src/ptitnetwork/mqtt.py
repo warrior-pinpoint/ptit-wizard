@@ -3,7 +3,9 @@ import time
 import os
 import uuid
 from collections import namedtuple
-from common import constant
+from .common import constants
+
+MQTT_LOG_ERR = 0x08
 
 _MQTT_CREDENTIAL = namedtuple('MQTT_CREDENTIAL', ['host', 'port', 'username', 'password'])
 
@@ -39,10 +41,10 @@ class Mqtt(client.Client):
     def _infer_credential():
 
         env_mapping = {
-            constant.ENV_CREDENTIAL_PORT: "port",
-            constant.ENV_CREDENTIAL_HOST: "host",
-            constant.ENV_CREDENTIAL_USER: "username",
-            constant.ENV_CREDENTIAL_PW: "password",
+            constants.ENV_CREDENTIAL_PORT: "port",
+            constants.ENV_CREDENTIAL_HOST: "host",
+            constants.ENV_CREDENTIAL_USER: "username",
+            constants.ENV_CREDENTIAL_PW: "password",
         }
 
         credential = {key: os.getenv(env_key) for env_key, key in env_mapping.items()}
@@ -50,12 +52,53 @@ class Mqtt(client.Client):
         credential = _MQTT_CREDENTIAL(**credential)
         return credential
 
+    def message_callback_add(self, sub, callback):
+        self.subscribe(sub)
+        super().message_callback_add(sub, callback)
 
-if __name__ == '__main__':
+    def _handle_on_message(self, message):
+        matched = False
+        with self._callback_mutex:
+            try:
+                topic = message.topic
+            except UnicodeDecodeError:
+                topic = None
 
-    client = Mqtt.create(client_id='tai1', on_connect=on_connect_1)
-    client.loop_start()
-    print(client)
+            if topic is not None:
+                for callback in self._on_message_filtered.iter_match(
+                        message.topic):
+                    with self._in_callback_mutex:
+                        callback(self, message)
+                    matched = True
+
+            if matched == False and self.on_message:
+                with self._in_callback_mutex:
+                    try:
+                        self.on_message(self, self._userdata, message)
+                    except Exception as err:
+                        self._easy_log(MQTT_LOG_ERR,
+                                       'Caught exception in on_message: %s',
+                                       err)
+
+
+def test():
+    client1 = Mqtt.create(client_id='tai1', on_connect=on_connect_1)
+    client2 = Mqtt.create(client_id='tai2', on_connect=on_connect_1)
+    client1.loop_start()
+    client2.loop_start()
+
+    def tesy(client, message):
+        print('xin chao cac bann')
+
+    client1.message_callback_add('test', tesy)
+
+    import json
+
+    client2.publish('test', json.dumps({'helloL': 'ddd'}))
 
     while True:
         time.sleep(1)
+
+
+if __name__ == '__main__':
+    test()
