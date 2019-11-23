@@ -1,6 +1,6 @@
 from functools import wraps
 
-from louis.ptiterror.exceptions import BadRequest
+from ptiterror.exceptions import BadRequest
 from flask import request
 
 

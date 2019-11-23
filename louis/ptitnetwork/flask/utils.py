@@ -4,7 +4,7 @@ from flask import json, jsonify, request, g, app, current_app
 
 from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import InternalServerError
-from louis.ptiterror import exceptions
+from ptiterror import exceptions
 
 
 df_logger = logging.getLogger(__name__)
