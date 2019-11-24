@@ -67,12 +67,12 @@ class Mqtt(client.Client):
             if topic is not None:
                 for callback in self._on_message_filtered.iter_match(
                         message.topic):
-                    with self._in_callback_mutex:
+                    with self._in_callback:
                         callback(self, message)
                     matched = True
 
             if matched == False and self.on_message:
-                with self._in_callback_mutex:
+                with self._in_callback:
                     try:
                         self.on_message(self, self._userdata, message)
                     except Exception as err:
