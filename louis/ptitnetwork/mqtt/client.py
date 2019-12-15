@@ -3,7 +3,9 @@ import time
 import os
 import uuid
 from collections import namedtuple
-from ptitnetwork.common import constants
+from louis.ptitnetwork.common import constants
+import threading
+import json
 
 MQTT_LOG_ERR = 0x08
 
@@ -17,6 +19,7 @@ def on_connect_1(client, userdata, flags, rc):
 class Mqtt(client.Client):
 
     def __init__(self, **kwargs):
+        self._in_callback = threading.Lock()
         super().__init__(**kwargs)
 
     @classmethod
@@ -57,6 +60,9 @@ class Mqtt(client.Client):
         super().message_callback_add(sub, callback)
 
     def _handle_on_message(self, message):
+        payload = message.payload
+        payload = payload.decode('utf-8') if isinstance(payload, bytes) else payload
+        message.payload = json.loads(payload)
         matched = False
         with self._callback_mutex:
             try:
