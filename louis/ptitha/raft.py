@@ -5,8 +5,8 @@ Resources: https://raft.github.io/
 """
 import logging
 import time, random, os, json, threading
-from louis.ptitnetwork.mqtt.client import Mqtt as MqttClient
-from louis.ptithelper import scheduler, debug
+from ptitnetwork.mqtt.client import Mqtt as MqttClient
+from ptithelper import scheduler, debug
 from functools import wraps
 from collections import deque
 

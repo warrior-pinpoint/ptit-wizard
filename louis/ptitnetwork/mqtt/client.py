@@ -3,7 +3,7 @@ import time
 import os
 import uuid
 from collections import namedtuple
-from louis.ptitnetwork.common import constants
+from ptitnetwork.common import constants
 import threading
 import json
 
