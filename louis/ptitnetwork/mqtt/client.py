@@ -62,7 +62,9 @@ class Mqtt(client.Client):
     def _handle_on_message(self, message):
         payload = message.payload
         payload = payload.decode('utf-8') if isinstance(payload, bytes) else payload
-        message.payload = json.loads(payload)
+        if isinstance(payload, str):
+            message.payload = json.loads(payload)
+
         matched = False
         with self._callback_mutex:
             try:
