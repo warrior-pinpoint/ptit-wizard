@@ -62,6 +62,7 @@ class Mqtt(client.Client):
     def _handle_on_message(self, message):
         payload = message.payload
         payload = payload.decode('utf-8') if isinstance(payload, bytes) else payload
+        print('####################', type(payload), message.topic)
         if isinstance(payload, str):
             message.payload = json.loads(payload)
 
